@@ -10,8 +10,9 @@ async function HandleRandomQuestion(cityName: any) {
   } catch (err: any) {
     if (err.response.status === 400) {
       return;
+    } else {
+      return "No cities";
     }
-    return Alert.alert("Não encontramos essa cidade, escolha outra.");
   }
 }
 

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import { HandleRandomQuestion } from "@api/axios";
 
@@ -10,7 +10,10 @@ export default function HomeScreen() {
     async function a() {
       const weather = await HandleRandomQuestion(CityName);
 
-      console.log(weather.name);
+      if (weather === "No cities") {
+        setCityName("");
+        Alert.alert("Não encontramos essa cidade, escolha outra.");
+      }
     }
     a();
   }, [CityName]);
@@ -44,7 +47,7 @@ export default function HomeScreen() {
           onFail={(error) => console.error(error)}
         />
       </View>
-      {CityName ? (
+      {CityName !== "" ? (
         <View style={{ backgroundColor: "white" }}>
           <Text
             style={{
@@ -89,6 +92,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 20,
     width: "100%",
     paddingHorizontal: 20,
   },

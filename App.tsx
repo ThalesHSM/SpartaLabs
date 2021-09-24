@@ -22,7 +22,6 @@ export default function App() {
           <routes.Screen name="Home" component={HomeScreen} />
         </routes.Navigator>
       </NavigationContainer>
-      <HomeScreen />
       <StatusBar style="light" />
     </View>
   );
@@ -32,8 +31,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#ecf0f1",
-    alignItems: "center",
-    justifyContent: "center",
     marginTop: Platform.OS === "ios" ? 0 : Constants.statusBarHeight,
   },
 });
