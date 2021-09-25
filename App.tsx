@@ -1,17 +1,34 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
-import HomeScreen from "@screens/HomeScreen";
+import { StyleSheet, View, Platform } from "react-native";
+import Constants from "expo-constants";
+
+import { NavigationContainer } from "@react-navigation/native";
+import { createStackNavigator } from "@react-navigation/stack";
+
+import HomeScreen from "@src/screens/HomeScreen/HomeScreen";
+
+const routes = createStackNavigator();
 
 export default function App() {
-  return <HomeScreen />;
+  return (
+    <View style={styles.container}>
+      <NavigationContainer>
+        <routes.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <routes.Screen name="Home" component={HomeScreen} />
+        </routes.Navigator>
+      </NavigationContainer>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
+    backgroundColor: "#ecf0f1",
+    marginTop: Platform.OS === "ios" ? 0 : Constants.statusBarHeight,
   },
 });
