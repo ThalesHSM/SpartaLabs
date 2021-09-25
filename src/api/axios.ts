@@ -3,10 +3,12 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import BASE_URL from "@utils/constants";
 
+
 async function HandleRandomQuestion(cityName: any) {
   try {
     const response = await axios.get(
       `${BASE_URL}/weather?q=${cityName}&APPID=41663f4074ad8cb97dad4981753828b2`
+
     );
     return response.data;
   } catch (err: any) {
