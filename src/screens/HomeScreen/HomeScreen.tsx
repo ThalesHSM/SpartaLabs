@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import {
   HandleRandomQuestion,
   HandleGetStorageItems,
   HandleSetStorageItems,
-} from "@api/axios";
+  HandleRemoveStorageItem,
+} from "@src/api/api";
 import uuid from "react-native-uuid";
 
 import { StatusBar } from "expo-status-bar";
@@ -27,37 +35,41 @@ export default function HomeScreen() {
     handleStorageItems();
   }, []);
 
-  useEffect(() => {
-    async function getCityWeather() {
-      const weather = await HandleRandomQuestion(cityName);
-      console.log(cityName.length);
-      if (weather === "No cities") {
-        setCityName([]);
-        Alert.alert("Não encontramos essa cidade, escolha outra.");
-      }
-    }
-
-    getCityWeather();
-  }, [cityName]);
-
-  async function handleAddCity() {
-    HandleSetStorageItems(cityName);
+  function handleAddCity(item: any) {
+    HandleSetStorageItems(item);
   }
 
-  function handleCityInputValue(newCity: string) {
-    for (let i = 0; i < cityName.length; i++) {
-      if (newCity === cityName[i].city) {
-        return;
+  async function handleCityInputValue(newCity: string) {
+    if (cityName) {
+      for (let i = 0; i < cityName.length; i++) {
+        if (newCity === cityName[i].city) {
+          return;
+        }
       }
     }
-    console.log(newCity);
+    const weather = await HandleRandomQuestion(newCity);
 
-    setCityName([...cityName, { city: newCity, id: uuid.v4() }]);
+    if (weather === "No cities") {
+      Alert.alert("Não encontramos essa cidade! ", "Procure outra!", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+
+    if (cityName && cityName.length > 0) {
+      setCityName([...cityName, { city: newCity, id: uuid.v4() }]);
+      return;
+    }
+    setCityName([{ city: newCity, id: uuid.v4() }]);
+  }
+
+  function handleRemoveCity(item: any) {
+    HandleRemoveStorageItem(item);
   }
 
   return (
     <>
-      <View style={styles.container}>
+      <ScrollView keyboardShouldPersistTaps="always" style={styles.container}>
         <View
           style={{
             height: 200,
@@ -68,8 +80,8 @@ export default function HomeScreen() {
         >
           <GooglePlacesAutocomplete
             filterReverseGeocodingByTypes={[
+              "locality",
               "administrative_area_level_3",
-              "food",
             ]}
             placeholder="Search"
             query={{
@@ -80,46 +92,61 @@ export default function HomeScreen() {
             onPress={(data, details = null) =>
               handleCityInputValue(data.structured_formatting.main_text)
             }
-            onFail={(error) => console.error(error)}
+            onFail={error => console.error(error)}
           />
         </View>
 
-        {cityName.map((item: any) => (
-          <TouchableOpacity key={item.id}>
-            <View style={{ backgroundColor: "white", marginVertical: 5 }}>
-              <Text
-                style={{
-                  fontWeight: "600",
-                  fontSize: 25,
-                  marginVertical: 5,
-                  marginHorizontal: 10,
-                }}
-              >
-                {item.city}
-              </Text>
-
-              <Text
-                style={{ fontSize: 18, marginBottom: 10, marginHorizontal: 10 }}
-              >
-                Brasil
-              </Text>
-              <TouchableOpacity onPress={handleAddCity}>
+        {cityName.length > 0 &&
+          cityName.map((item: any) => (
+            <TouchableOpacity key={item.id}>
+              <View style={{ backgroundColor: "white", marginVertical: 5 }}>
+                <TouchableOpacity
+                  onPress={() => {
+                    handleRemoveCity(item);
+                  }}
+                >
+                  <Text>Apagar</Text>
+                </TouchableOpacity>
                 <Text
                   style={{
-                    color: "blue",
-                    fontSize: 20,
+                    fontWeight: "600",
+                    fontSize: 25,
+                    marginVertical: 5,
+                    marginHorizontal: 10,
+                  }}
+                >
+                  {item.city}
+                </Text>
+
+                <Text
+                  style={{
+                    fontSize: 18,
                     marginBottom: 10,
                     marginHorizontal: 10,
                   }}
                 >
-                  Adicionar
+                  Brasil
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </TouchableOpacity>
-        ))}
-
-        {cityName.length > 0 ? (
+                <TouchableOpacity
+                  onPress={() => {
+                    handleAddCity(item);
+                  }}
+                >
+                  <Text
+                    style={{
+                      color: "blue",
+                      fontSize: 20,
+                      marginBottom: 10,
+                      marginHorizontal: 10,
+                    }}
+                  >
+                    Adicionar
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          ))}
+        {cityName ? (
           <View />
         ) : (
           <View style={{ flex: 1, marginTop: 30, alignItems: "center" }}>
@@ -129,8 +156,7 @@ export default function HomeScreen() {
             <Text>Tente adicionar uma cidade usando o botão de busca.</Text>
           </View>
         )}
-      </View>
-
+      </ScrollView>
       <StatusBar style="light" />
     </>
   );
@@ -139,7 +165,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 20,
+    marginVertical: 20,
 
     width: "100%",
     paddingHorizontal: 20,
