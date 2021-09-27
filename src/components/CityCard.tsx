@@ -1,7 +1,6 @@
 import React from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useTranslation } from "react-i18next";
 
 import {
   StyledCardView,
@@ -13,7 +12,10 @@ import {
   StyledTempView,
   StyledMinMaxTemp,
 } from "@src/components/StyledCardItems";
-import { HandleRemoveStorageItem, HandleSetStorageItems } from "@src/api/api";
+import {
+  HandleRemoveStorageItem,
+  HandleSetStorageItems,
+} from "@config/api/api";
 import {
   HeartIcon,
   StyledmessageText,
@@ -23,7 +25,7 @@ import Colors from "@src/utils/colors";
 
 interface ITemp {
   cityName: any;
-  setIsSaved: any;
+  setIsSaved?: any;
 }
 
 export default function CityCard({ setIsSaved, cityName }: ITemp) {
@@ -56,57 +58,98 @@ export default function CityCard({ setIsSaved, cityName }: ITemp) {
 
   return (
     <View style={{ alignItems: "flex-end", marginRight: 20 }}>
-      {cityName ? (
-        cityName.length > 0 ? (
-          cityName.map((item: any) => (
-            <TouchableOpacity
-              key={item.id}
-              onPress={() => {
-                navigation.navigate("Details", { item });
-              }}
-            >
-              <StyledCardView>
-                <View style={{ marginHorizontal: 5 }}>
-                  <StyledFirstText>{item.city}</StyledFirstText>
+      {setIsSaved ? (
+        <View>
+          {cityName ? (
+            cityName.length > 0 ? (
+              cityName.map((item: any) => (
+                <TouchableOpacity
+                  key={item.id}
+                  onPress={() => {
+                    navigation.navigate("Details", { item });
+                  }}
+                >
+                  <StyledCardView>
+                    <View style={{ marginHorizontal: 5 }}>
+                      <StyledFirstText>{item.city}</StyledFirstText>
 
-                  <StyledSecondTextName>Brasil</StyledSecondTextName>
-                  <StyledDescription>{item.description}</StyledDescription>
+                      <StyledSecondTextName>Brasil</StyledSecondTextName>
+                      <StyledDescription>{item.description}</StyledDescription>
 
-                  <StyledTempView>
-                    <StyledMinMaxTemp>{item.minTemp}°</StyledMinMaxTemp>
-                    <StyledMinMaxTemp> - {item.maxTemp}°</StyledMinMaxTemp>
-                  </StyledTempView>
-                </View>
+                      <StyledTempView>
+                        <StyledMinMaxTemp>{item.minTemp}°</StyledMinMaxTemp>
+                        <StyledMinMaxTemp> - {item.maxTemp}°</StyledMinMaxTemp>
+                      </StyledTempView>
+                    </View>
 
-                <StyledTempAndHeartView>
-                  <StyledTempText>{item.temp}°</StyledTempText>
-                  <TouchableOpacity
-                    onPress={() => {
-                      handleSavedItem(item);
+                    <StyledTempAndHeartView>
+                      <StyledTempText>{item.temp}°</StyledTempText>
+                      <TouchableOpacity
+                        onPress={() => {
+                          handleSavedItem(item);
+                        }}
+                      >
+                        <HeartIcon
+                          name="heart"
+                          size={30}
+                          color={Colors.black}
+                          style={{ paddingHorizontal: 10, paddingVertical: 10 }}
+                          colored={item.saved}
+                        />
+                      </TouchableOpacity>
+                    </StyledTempAndHeartView>
+                  </StyledCardView>
+                </TouchableOpacity>
+              ))
+            ) : (
+              <StyledmessageView>
+                <StyledmessageText>Parece que você ainda não</StyledmessageText>
+                <StyledmessageText>adicionou uma cidade.</StyledmessageText>
+                <Text style={{ marginTop: 5 }}>
+                  Tente adicionar uma cidade usando o campo de busca.
+                </Text>
+              </StyledmessageView>
+            )
+          ) : null}
+        </View>
+      ) : (
+        <View>
+          {cityName ? (
+            cityName.length > 0 ? (
+              cityName.map((item: any) => (
+                <StyledCardView key={item.id}>
+                  <View style={{ marginHorizontal: 5 }}>
+                    <StyledFirstText>{item.dateName}</StyledFirstText>
+                    <StyledSecondTextName>{item.date}</StyledSecondTextName>
+
+                    <StyledDescription>{item.description}</StyledDescription>
+                    <StyledTempView>
+                      <StyledMinMaxTemp>{item.minTemp}°</StyledMinMaxTemp>
+                      <StyledMinMaxTemp>- {item.maxTemp}°</StyledMinMaxTemp>
+                    </StyledTempView>
+                  </View>
+                  <View
+                    style={{
+                      flex: 1,
+                      alignItems: "flex-end",
                     }}
                   >
-                    <HeartIcon
-                      name="heart"
-                      size={30}
-                      color={Colors.black}
-                      style={{ paddingHorizontal: 10, paddingVertical: 10 }}
-                      colored={item.saved}
-                    />
-                  </TouchableOpacity>
-                </StyledTempAndHeartView>
-              </StyledCardView>
-            </TouchableOpacity>
-          ))
-        ) : (
-          <StyledmessageView>
-            <StyledmessageText>Parece que você ainda não</StyledmessageText>
-            <StyledmessageText>adicionou uma cidade.</StyledmessageText>
-            <Text style={{ marginTop: 5 }}>
-              Tente adicionar uma cidade usando o campo de busca.
-            </Text>
-          </StyledmessageView>
-        )
-      ) : null}
+                    <StyledTempText>{item.temp}°</StyledTempText>
+                  </View>
+                </StyledCardView>
+              ))
+            ) : (
+              <ActivityIndicator
+                size="large"
+                color={Colors.black}
+                style={{
+                  marginTop: 10,
+                }}
+              />
+            )
+          ) : null}
+        </View>
+      )}
     </View>
   );
 }
