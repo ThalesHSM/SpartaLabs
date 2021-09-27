@@ -28,18 +28,28 @@ async function HandleCityWeekWeather(cityName: any) {
 }
 
 async function HandleSetStorageItems(city: any) {
-  try {
-    const citiesJSON = await AsyncStorage.getItem("@storage_Key");
+  let newArray = [];
 
-    if (citiesJSON !== null) {
-      let storageArray = JSON.parse(citiesJSON);
-      let newArray = [...storageArray, city];
-      const stringifiedArray = JSON.stringify(newArray);
+  const citiesJSON = await AsyncStorage.getItem("@storage_Key");
 
-      await AsyncStorage.setItem("@storage_Key", stringifiedArray);
-    }
-  } catch (error) {
-    console.log(error);
+  if (citiesJSON === null) {
+    newArray = [city];
+
+    const stringifiedArray = JSON.stringify(newArray);
+
+    await AsyncStorage.setItem("@storage_Key", stringifiedArray);
+
+    return;
+  }
+
+  if (citiesJSON !== null) {
+    newArray = JSON.parse(citiesJSON);
+    newArray.push(city);
+
+    const stringifiedArray = JSON.stringify(newArray);
+
+    await AsyncStorage.setItem("@storage_Key", stringifiedArray);
+    return;
   }
 }
 

@@ -7,6 +7,7 @@ export const StyledScrollView = styled.ScrollView`
 export const StyledHeaderButton = styled.TouchableOpacity`
   flex-direction: row;
   align-items: center;
+  width: 50%;
 `;
 
 export const StyledCityName = styled.Text`
