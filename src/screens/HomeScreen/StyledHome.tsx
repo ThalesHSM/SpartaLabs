@@ -12,7 +12,6 @@ export const HeartIcon = styled(AntDesign)<IIcon>`
   padding-right: 10px;
   padding-bottom: 10px;
   padding-top: 10px;
-
   ${(props) =>
     props.colored === false
       ? css`
@@ -34,7 +33,6 @@ export const StyledScrollView = styled.ScrollView`
 
 export const StyledSearchBar = styled.View`
   height: 200px;
-  margin-bottom: 50px;
   padding: 10px;
   background-color: grey;
 `;

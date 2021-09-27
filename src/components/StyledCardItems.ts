@@ -7,7 +7,7 @@ interface ICard {
 
 export const StyledCard = styled.View<ICard>`
   flex: 1;
-  background-color: ${Colors.grey}
+  background-color: ${Colors.grey};
   padding: 16px;
 `;
 
@@ -57,7 +57,6 @@ export const StyledTempAndHeartView = styled.View`
 
 export const StyledTempText = styled.Text`
   color: ${Colors.orange};
-
   font-size: 34px;
 `;
 
