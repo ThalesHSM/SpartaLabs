@@ -10,10 +10,7 @@ async function handleCityWeatherQuestion(cityName: any) {
     );
     return response.data;
   } catch (err: any) {
-    if (err.response.status === 400) {
-      return "No cities";
-    }
-    if (err.response.status > 400) {
+    if (err.response.status >= 400) {
       return "No cities";
     }
   }
