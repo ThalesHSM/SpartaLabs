@@ -3,10 +3,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import BASE_URL from "@utils/constants";
 
-async function HandleRandomQuestion(cityName: any) {
+async function handleCityWeatherQuestion(cityName: any) {
   try {
     const response = await axios.get(
-      `${BASE_URL}/weather?q=${cityName}&APPID=41663f4074ad8cb97dad4981753828b2`
+      `${BASE_URL}weather?q=${cityName}&APPID=41663f4074ad8cb97dad4981753828b2`
     );
     return response.data;
   } catch (err: any) {
@@ -19,12 +19,20 @@ async function HandleRandomQuestion(cityName: any) {
   }
 }
 
+async function HandleCityWeekWeather(cityName: any) {
+  const response = await axios.get(
+    `${BASE_URL}forecast?q=${cityName}&APPID=41663f4074ad8cb97dad4981753828b2`
+  );
+  const fiveDays = response.data.list.slice(0, 5);
+  return fiveDays;
+}
+
 async function HandleSetStorageItems(city: any) {
   try {
-    const usersJSON = await AsyncStorage.getItem("@storage_Key");
+    const citiesJSON = await AsyncStorage.getItem("@storage_Key");
 
-    if (usersJSON !== null) {
-      let storageArray = JSON.parse(usersJSON);
+    if (citiesJSON !== null) {
+      let storageArray = JSON.parse(citiesJSON);
       let newArray = [...storageArray, city];
       const stringifiedArray = JSON.stringify(newArray);
 
@@ -37,11 +45,11 @@ async function HandleSetStorageItems(city: any) {
 
 async function HandleRemoveStorageItem(singleCity: any) {
   try {
-    const usersJSON = await AsyncStorage.getItem("@storage_Key");
+    const citiesJSON = await AsyncStorage.getItem("@storage_Key");
 
-    if (usersJSON !== null) {
-      let usersArray = JSON.parse(usersJSON);
-      const alteredUsers = usersArray.filter(function (e: any) {
+    if (citiesJSON !== null) {
+      let storageArray = JSON.parse(citiesJSON);
+      const alteredUsers = storageArray.filter(function (e: any) {
         return e.id !== singleCity.id;
       });
 
@@ -59,14 +67,15 @@ async function HandleGetStorageItems() {
       const restoredArray = JSON.parse(value);
       return restoredArray;
     }
-  } catch (err: any) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
   }
 }
 
 export {
-  HandleRandomQuestion,
+  handleCityWeatherQuestion,
   HandleSetStorageItems,
   HandleGetStorageItems,
   HandleRemoveStorageItem,
+  HandleCityWeekWeather,
 };
