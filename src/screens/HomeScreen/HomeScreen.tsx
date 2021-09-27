@@ -1,30 +1,54 @@
 import React, { useEffect, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ScrollView,
-  Alert,
-} from "react-native";
+import { Text, View, TouchableOpacity, Alert } from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import {
-  HandleRandomQuestion,
+  handleCityWeatherQuestion,
   HandleGetStorageItems,
   HandleSetStorageItems,
   HandleRemoveStorageItem,
 } from "@src/api/api";
 import uuid from "react-native-uuid";
+// import { useTranslation } from "react-i18next";
+
+import { useNavigation } from "@react-navigation/native";
 
 import { StatusBar } from "expo-status-bar";
+
+import {
+  HeartIcon,
+  StyledmessageText,
+  StyledmessageView,
+  StyledScrollView,
+  StyledSearchBar,
+} from "./StyledHome";
+import {
+  StyledCardView,
+  StyledFirstText,
+  StyledSecondTextName,
+  StyledDescription,
+  StyledTempAndHeartView,
+  StyledTempText,
+  StyledTempView,
+  StyledMinMaxTemp,
+} from "@components/StyledCard";
+import Colors from "@utils/colors";
 
 interface ICard {
   city?: string;
   id?: string | number[];
+  temp?: number;
+  maxTemp?: number;
+  minTemp?: number;
+  description?: string;
+  saved?: boolean;
 }
 
 export default function HomeScreen() {
+  // const { t, i18n } = useTranslation();
+  const navigation = useNavigation();
+
   const [cityName, setCityName] = useState<ICard[]>([]);
+  const [isSaved, setIsSaved] = useState<boolean>(false);
 
   useEffect(() => {
     async function handleStorageItems() {
@@ -47,7 +71,7 @@ export default function HomeScreen() {
         }
       }
     }
-    const weather = await HandleRandomQuestion(newCity);
+    const weather = await handleCityWeatherQuestion(newCity);
 
     if (weather === "No cities") {
       Alert.alert("Não encontramos essa cidade! ", "Procure outra!", [
@@ -57,27 +81,58 @@ export default function HomeScreen() {
     }
 
     if (cityName && cityName.length > 0) {
-      setCityName([...cityName, { city: newCity, id: uuid.v4() }]);
+      setCityName([
+        ...cityName,
+        {
+          city: newCity,
+          id: uuid.v4(),
+          temp: Math.floor(weather.main.temp - 273),
+          minTemp: Math.floor(weather.main.temp_min - 273),
+          maxTemp: Math.floor(weather.main.temp_max - 273),
+          description: weather.weather[0].description,
+          saved: false,
+        },
+      ]);
       return;
     }
-    setCityName([{ city: newCity, id: uuid.v4() }]);
+    setCityName([
+      {
+        city: newCity,
+        id: uuid.v4(),
+        temp: Math.floor(weather.main.temp - 273),
+        minTemp: Math.floor(weather.main.temp_min - 273),
+        maxTemp: Math.floor(weather.main.temp_max - 273),
+        description: weather.weather[0].description,
+        saved: false,
+      },
+    ]);
   }
 
   function handleRemoveCity(item: any) {
     HandleRemoveStorageItem(item);
   }
 
+  function handleSavedItem(item: any) {
+    if (item.saved === false) {
+      item.saved = true;
+      setIsSaved(true);
+      handleAddCity(item);
+      return;
+    }
+    if (item.saved === true) {
+      item.saved = false;
+      setIsSaved(false);
+
+      handleRemoveCity(item);
+
+      return;
+    }
+  }
+
   return (
     <>
-      <ScrollView keyboardShouldPersistTaps="always" style={styles.container}>
-        <View
-          style={{
-            height: 200,
-            marginBottom: 50,
-            padding: 10,
-            backgroundColor: "grey",
-          }}
-        >
+      <StyledScrollView keyboardShouldPersistTaps="always">
+        <StyledSearchBar>
           <GooglePlacesAutocomplete
             filterReverseGeocodingByTypes={[
               "locality",
@@ -92,82 +147,61 @@ export default function HomeScreen() {
             onPress={(data, details = null) =>
               handleCityInputValue(data.structured_formatting.main_text)
             }
-            onFail={error => console.error(error)}
+            onFail={(error) => console.error(error)}
           />
-        </View>
+        </StyledSearchBar>
 
-        {cityName.length > 0 &&
+        {cityName.length > 0 ? (
           cityName.map((item: any) => (
-            <TouchableOpacity key={item.id}>
-              <View style={{ backgroundColor: "white", marginVertical: 5 }}>
-                <TouchableOpacity
-                  onPress={() => {
-                    handleRemoveCity(item);
-                  }}
-                >
-                  <Text>Apagar</Text>
-                </TouchableOpacity>
-                <Text
-                  style={{
-                    fontWeight: "600",
-                    fontSize: 25,
-                    marginVertical: 5,
-                    marginHorizontal: 10,
-                  }}
-                >
-                  {item.city}
-                </Text>
+            <TouchableOpacity
+              key={item.id}
+              onPress={() => {
+                navigation.navigate("Details", { item });
+              }}
+            >
+              <StyledCardView>
+                <View style={{ marginHorizontal: 5 }}>
+                  <StyledFirstText>{item.city}</StyledFirstText>
 
-                <Text
-                  style={{
-                    fontSize: 18,
-                    marginBottom: 10,
-                    marginHorizontal: 10,
-                  }}
-                >
-                  Brasil
-                </Text>
-                <TouchableOpacity
-                  onPress={() => {
-                    handleAddCity(item);
-                  }}
-                >
-                  <Text
-                    style={{
-                      color: "blue",
-                      fontSize: 20,
-                      marginBottom: 10,
-                      marginHorizontal: 10,
+                  <StyledSecondTextName>Brasil</StyledSecondTextName>
+                  <StyledDescription>{item.description}</StyledDescription>
+
+                  <StyledTempView>
+                    <StyledMinMaxTemp>{item.minTemp}°</StyledMinMaxTemp>
+                    <StyledMinMaxTemp> - {item.maxTemp}°</StyledMinMaxTemp>
+                  </StyledTempView>
+                </View>
+
+                <StyledTempAndHeartView>
+                  <StyledTempText>{item.temp}°</StyledTempText>
+                  <TouchableOpacity
+                    onPress={() => {
+                      handleSavedItem(item);
                     }}
                   >
-                    Adicionar
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                    <HeartIcon
+                      name="heart"
+                      size={30}
+                      color={Colors.black}
+                      style={{ paddingHorizontal: 10, paddingVertical: 10 }}
+                      colored={item.saved}
+                    />
+                  </TouchableOpacity>
+                </StyledTempAndHeartView>
+              </StyledCardView>
             </TouchableOpacity>
-          ))}
-        {cityName ? (
-          <View />
+          ))
         ) : (
-          <View style={{ flex: 1, marginTop: 30, alignItems: "center" }}>
-            <Text style={{ fontWeight: "bold", fontSize: 20 }}>
-              Parece que você ainda não {"\n"}adicionou uma cidade.
+          <StyledmessageView>
+            <StyledmessageText>Parece que você ainda não</StyledmessageText>
+            <StyledmessageText>adicionou uma cidade.</StyledmessageText>
+            <Text style={{ marginTop: 5 }}>
+              Tente adicionar uma cidade usando o campo de busca.
             </Text>
-            <Text>Tente adicionar uma cidade usando o botão de busca.</Text>
-          </View>
+          </StyledmessageView>
         )}
-      </ScrollView>
+      </StyledScrollView>
       <StatusBar style="light" />
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginVertical: 20,
-
-    width: "100%",
-    paddingHorizontal: 20,
-  },
-});
