@@ -57,7 +57,7 @@ export default function CityCard({ setIsSaved, cityName }: ITemp) {
   }
 
   return (
-    <View style={{ alignItems: "flex-end", marginRight: 20 }}>
+    <View style={{ alignItems: "flex-end" }}>
       {setIsSaved ? (
         <View>
           {cityName ? (
@@ -105,7 +105,7 @@ export default function CityCard({ setIsSaved, cityName }: ITemp) {
               <StyledmessageView>
                 <StyledmessageText>Parece que você ainda não</StyledmessageText>
                 <StyledmessageText>adicionou uma cidade.</StyledmessageText>
-                <Text style={{ marginTop: 5 }}>
+                <Text style={{ marginTop: 5, marginLeft: 20 }}>
                   Tente adicionar uma cidade usando o campo de busca.
                 </Text>
               </StyledmessageView>
@@ -113,7 +113,11 @@ export default function CityCard({ setIsSaved, cityName }: ITemp) {
           ) : null}
         </View>
       ) : (
-        <View>
+        <View
+          style={{
+            width: "100%",
+          }}
+        >
           {cityName ? (
             cityName.length > 0 ? (
               cityName.map((item: any) => (
@@ -144,6 +148,8 @@ export default function CityCard({ setIsSaved, cityName }: ITemp) {
                 color={Colors.black}
                 style={{
                   marginTop: 10,
+                  marginLeft: 20,
+                  alignSelf: "center",
                 }}
               />
             )

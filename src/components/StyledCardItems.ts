@@ -18,6 +18,7 @@ export const StyledCardView = styled.View`
   flex-direction: row;
   margin-top: 10px;
   margin-bottom: 10px;
+  margin-right: 20px;
 `;
 
 export const StyledTempView = styled.View`
