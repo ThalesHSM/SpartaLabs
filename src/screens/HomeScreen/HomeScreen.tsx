@@ -37,11 +37,14 @@ export default function HomeScreen() {
   }, []);
 
   async function handleCityInputValue(newCity: string) {
-    for (let i = 0; i < cityName.length; i++) {
-      if (newCity === cityName[i].city) {
-        return;
+    if (cityName && cityName.length) {
+      for (let i = 0; i < cityName.length; i++) {
+        if (newCity === cityName[i].city) {
+          return;
+        }
       }
     }
+
     const weather = await handleCityWeatherQuestion(newCity);
 
     if (weather === "No cities") {
@@ -50,8 +53,7 @@ export default function HomeScreen() {
       ]);
       return;
     }
-
-    if (isCelsius === true) {
+    if (cityName && cityName.length > 0 && isCelsius === true) {
       setCityName([
         ...cityName,
         {
@@ -67,9 +69,39 @@ export default function HomeScreen() {
       return;
     }
 
-    if (isCelsius === false) {
+    if (cityName && cityName.length > 0 && isCelsius === false) {
       setCityName([
         ...cityName,
+        {
+          city: newCity,
+          id: uuid.v4(),
+          temp: Math.floor(((weather.main.temp - 273) * 9) / 5 + 32),
+          minTemp: Math.floor(((weather.main.temp_min - 273) * 9) / 5 + 32),
+          maxTemp: Math.floor(((weather.main.temp_max - 273) * 9) / 5 + 32),
+          description: weather.weather[0].description,
+          saved: false,
+        },
+      ]);
+      return;
+    }
+
+    if (isCelsius === true) {
+      setCityName([
+        {
+          city: newCity,
+          id: uuid.v4(),
+          temp: Math.floor(weather.main.temp - 273),
+          minTemp: Math.floor(weather.main.temp_min - 273),
+          maxTemp: Math.floor(weather.main.temp_max - 273),
+          description: weather.weather[0].description,
+          saved: false,
+        },
+      ]);
+      return;
+    }
+
+    if (isCelsius === false) {
+      setCityName([
         {
           city: newCity,
           id: uuid.v4(),

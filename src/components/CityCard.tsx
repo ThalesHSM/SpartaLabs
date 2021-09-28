@@ -101,16 +101,16 @@ export default function CityCard({ setIsSaved, cityName }: ITemp) {
                   </StyledCardView>
                 </TouchableOpacity>
               ))
-            ) : (
-              <StyledmessageView>
-                <StyledmessageText>Parece que você ainda não</StyledmessageText>
-                <StyledmessageText>adicionou uma cidade.</StyledmessageText>
-                <Text style={{ marginTop: 5, marginLeft: 20 }}>
-                  Tente adicionar uma cidade usando o campo de busca.
-                </Text>
-              </StyledmessageView>
-            )
-          ) : null}
+            ) : null
+          ) : (
+            <StyledmessageView>
+              <StyledmessageText>Parece que você ainda não</StyledmessageText>
+              <StyledmessageText>adicionou uma cidade.</StyledmessageText>
+              <Text style={{ marginTop: 5, marginLeft: 20 }}>
+                Tente adicionar uma cidade usando o campo de busca.
+              </Text>
+            </StyledmessageView>
+          )}
         </View>
       ) : (
         <View
