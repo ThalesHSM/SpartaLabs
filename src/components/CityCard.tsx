@@ -3,6 +3,11 @@ import { ActivityIndicator, Text, TouchableOpacity, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import {
+  HandleRemoveStorageItem,
+  HandleSetStorageItems,
+} from "@config/api/api";
+
+import {
   StyledCardView,
   StyledFirstText,
   StyledSecondTextName,
@@ -11,16 +16,15 @@ import {
   StyledTempText,
   StyledTempView,
   StyledMinMaxTemp,
-} from "@src/components/StyledCardItems";
-import {
-  HandleRemoveStorageItem,
-  HandleSetStorageItems,
-} from "@config/api/api";
-import {
   HeartIcon,
-  StyledmessageText,
+} from "@src/components/StyledCardItems";
+
+import {
+  StyledMessageText,
   StyledmessageView,
+  StyledSecondMmessageText,
 } from "@src/screens/HomeScreen/StyledHome";
+
 import Colors from "@src/utils/colors";
 
 interface ITemp {
@@ -57,7 +61,7 @@ export default function CityCard({ setIsSaved, cityName }: ITemp) {
   }
 
   return (
-    <View style={{ alignItems: "flex-end" }}>
+    <View>
       {setIsSaved ? (
         <View>
           {cityName ? (
@@ -70,7 +74,7 @@ export default function CityCard({ setIsSaved, cityName }: ITemp) {
                   }}
                 >
                   <StyledCardView>
-                    <View style={{ marginHorizontal: 5 }}>
+                    <View style={{ marginLeft: 5 }}>
                       <StyledFirstText>{item.city}</StyledFirstText>
 
                       <StyledSecondTextName>Brasil</StyledSecondTextName>
@@ -89,13 +93,25 @@ export default function CityCard({ setIsSaved, cityName }: ITemp) {
                           handleSavedItem(item);
                         }}
                       >
-                        <HeartIcon
-                          name="heart"
-                          size={30}
-                          color={Colors.black}
-                          style={{ paddingHorizontal: 10, paddingVertical: 10 }}
-                          colored={item.saved}
-                        />
+                        {item.saved === true ? (
+                          <HeartIcon
+                            name="heart"
+                            size={30}
+                            style={{
+                              paddingHorizontal: 10,
+                              paddingVertical: 10,
+                            }}
+                          />
+                        ) : (
+                          <HeartIcon
+                            name="hearto"
+                            size={30}
+                            style={{
+                              paddingHorizontal: 10,
+                              paddingVertical: 10,
+                            }}
+                          />
+                        )}
                       </TouchableOpacity>
                     </StyledTempAndHeartView>
                   </StyledCardView>
@@ -104,11 +120,14 @@ export default function CityCard({ setIsSaved, cityName }: ITemp) {
             ) : null
           ) : (
             <StyledmessageView>
-              <StyledmessageText>Parece que você ainda não</StyledmessageText>
-              <StyledmessageText>adicionou uma cidade.</StyledmessageText>
-              <Text style={{ marginTop: 5, marginLeft: 20 }}>
-                Tente adicionar uma cidade usando o campo de busca.
-              </Text>
+              <StyledMessageText>Parece que você ainda não</StyledMessageText>
+              <StyledMessageText style={{ marginBottom: 10 }}>
+                adicionou uma cidade.
+              </StyledMessageText>
+              <StyledSecondMmessageText>
+                Tente adicionar uma cidade usando o campo
+              </StyledSecondMmessageText>
+              <StyledSecondMmessageText>de busca.</StyledSecondMmessageText>
             </StyledmessageView>
           )}
         </View>

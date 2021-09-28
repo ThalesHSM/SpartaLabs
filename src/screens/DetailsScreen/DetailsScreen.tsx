@@ -100,7 +100,9 @@ export default function DetailsScreen(route: any) {
   }
   return (
     <StyledScrollView>
-      <View>
+      <View
+        style={{ backgroundColor: Colors.blue, padding: 10, paddingTop: 30 }}
+      >
         <StyledHeaderButton
           onPress={() => {
             navigation.goBack();
@@ -109,14 +111,14 @@ export default function DetailsScreen(route: any) {
           <MaterialIcons
             name="keyboard-arrow-left"
             size={30}
-            color={Colors.black}
+            color={Colors.white}
           />
           <StyledCityName>{item.city}</StyledCityName>
         </StyledHeaderButton>
         <StyledHeaderText>Previsão para os próximos dias</StyledHeaderText>
       </View>
 
-      {weekWeather.length ? (
+      {weekWeather && weekWeather.length ? (
         <View style={{ alignItems: "flex-end", marginRight: 20 }}>
           <TouchableOpacity onPress={changeTemp}>
             {isCelsius === true ? (
