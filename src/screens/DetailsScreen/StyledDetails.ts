@@ -1,4 +1,5 @@
 import styled from "styled-components/native";
+import Colors from "@src/utils/colors";
 
 export const StyledScrollView = styled.ScrollView`
   margin-top: 20px;
@@ -11,12 +12,19 @@ export const StyledHeaderButton = styled.TouchableOpacity`
 `;
 
 export const StyledCityName = styled.Text`
-  font-size: 18px;
+  font-size: 20px;
+  letter-spacing: 0.25px;
+  margin-bottom: 2px;
+  color: ${Colors.white};
+  font-family: "Roboto_500Medium";
 `;
 
 export const StyledHeaderText = styled.Text`
   align-self: center;
-  font-size: 16px;
-  margin-top: 5px;
+  font-size: 14px;
+  margin-top: 10px;
   margin-bottom: 5px;
+  color: ${Colors.white};
+
+  font-family: "Roboto_400Regular";
 `;

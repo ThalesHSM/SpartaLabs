@@ -12,6 +12,8 @@ import { StyledScrollView, StyledSearchBar } from "./StyledHome";
 import CityCard from "@src/components/CityCard";
 import { handleTempChange } from "@src/components/Temperature";
 
+import Colors from "@utils/colors";
+
 interface ICard {
   city: string;
   id: string | number[];
@@ -130,7 +132,7 @@ export default function HomeScreen() {
             "locality",
             "administrative_area_level_3",
           ]}
-          placeholder="Search"
+          placeholder="Adicionar cidade"
           query={{
             key: "AIzaSyAcS7vJeEUD10lLbaq2O-1tIOXAu2n0M-w",
             language: "pt-br", // language of the results
@@ -140,18 +142,35 @@ export default function HomeScreen() {
             handleCityInputValue(data.structured_formatting.main_text)
           }
           onFail={(error) => console.error(error)}
+          textInputProps={{ placeholderTextColor: Colors.white }}
+          styles={{
+            textInput: {
+              backgroundColor: Colors.blue,
+              color: Colors.white,
+              fontSize: 20,
+              fontFamily: "Roboto_400Regular",
+            },
+            description: {
+              color: Colors.white,
+              fontSize: 20,
+              fontFamily: "Roboto_400Regular",
+            },
+            row: { backgroundColor: Colors.blue },
+            poweredContainer: { backgroundColor: Colors.blue },
+          }}
         />
       </StyledSearchBar>
-
-      <View style={{ alignItems: "flex-end", marginRight: 20 }}>
-        <TouchableOpacity onPress={changeTemp}>
-          {isCelsius === true ? (
-            <Text style={{ fontSize: 24 }}>°C</Text>
-          ) : (
-            <Text style={{ fontSize: 24 }}>°F</Text>
-          )}
-        </TouchableOpacity>
-      </View>
+      {cityName && cityName.length ? (
+        <View style={{ alignItems: "flex-end", marginRight: 20 }}>
+          <TouchableOpacity onPress={changeTemp}>
+            {isCelsius === true ? (
+              <Text style={{ fontSize: 24 }}>°C</Text>
+            ) : (
+              <Text style={{ fontSize: 24 }}>°F</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      ) : null}
 
       <CityCard setIsSaved={setIsSaved} cityName={cityName} />
     </StyledScrollView>
