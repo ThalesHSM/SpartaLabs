@@ -83,6 +83,7 @@ export default function HomeScreen() {
       return;
     }
   }
+
   function changeTemp() {
     setIsCelsius(!isCelsius);
 

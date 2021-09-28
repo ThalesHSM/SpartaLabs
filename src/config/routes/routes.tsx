@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, Platform } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import { StatusBar } from "expo-status-bar";
 import Constants from "expo-constants";
@@ -33,6 +33,6 @@ export default function Routes() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: Platform.OS === "ios" ? 0 : Constants.statusBarHeight,
+    marginTop: Constants.statusBarHeight,
   },
 });
