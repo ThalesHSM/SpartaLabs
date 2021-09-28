@@ -57,7 +57,7 @@ export default function Routes() {
           <routes.Screen name="Details" component={DetailsScreen} />
         </routes.Navigator>
       </NavigationContainer>
-      <StatusBar style="dark" backgroundColor={Colors.blue} />
+      <StatusBar style="light" />
     </View>
   );
 }

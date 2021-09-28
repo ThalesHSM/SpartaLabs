@@ -7,6 +7,8 @@ import {
 } from "@config/api/api";
 import uuid from "react-native-uuid";
 
+import { AntDesign } from "@expo/vector-icons";
+
 import { StyledScrollView, StyledSearchBar } from "./StyledHome";
 
 import CityCard from "@src/components/CityCard";
@@ -157,6 +159,16 @@ export default function HomeScreen() {
             },
             row: { backgroundColor: Colors.blue },
             poweredContainer: { backgroundColor: Colors.blue },
+          }}
+        />
+        <AntDesign
+          name="search1"
+          size={25}
+          color={Colors.white}
+          style={{
+            paddingHorizontal: 10,
+            paddingVertical: 10,
+            marginTop: 3,
           }}
         />
       </StyledSearchBar>
