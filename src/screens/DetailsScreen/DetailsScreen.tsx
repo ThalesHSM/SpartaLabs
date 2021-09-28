@@ -101,7 +101,7 @@ export default function DetailsScreen(route: any) {
   return (
     <StyledScrollView>
       <View
-        style={{ backgroundColor: Colors.blue, padding: 10, paddingTop: 30 }}
+        style={{ backgroundColor: Colors.blue, padding: 10, paddingTop: 50 }}
       >
         <StyledHeaderButton
           onPress={() => {
