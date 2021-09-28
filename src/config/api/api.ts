@@ -29,7 +29,25 @@ async function HandleSetStorageItems(city: any) {
 
   const citiesJSON = await AsyncStorage.getItem("@storage_Key");
 
-  await AsyncStorage.clear();
+  if (citiesJSON === null) {
+    newArray = [city];
+
+    const stringifiedArray = JSON.stringify(newArray);
+
+    await AsyncStorage.setItem("@storage_Key", stringifiedArray);
+
+    return;
+  }
+
+  if (citiesJSON !== null) {
+    newArray = JSON.parse(citiesJSON);
+    newArray.push(city);
+
+    const stringifiedArray = JSON.stringify(newArray);
+
+    await AsyncStorage.setItem("@storage_Key", stringifiedArray);
+    return;
+  }
 }
 
 async function HandleRemoveStorageItem(singleCity: any) {
