@@ -1,9 +1,7 @@
 import styled from "styled-components/native";
 import Colors from "@src/utils/colors";
 
-export const StyledScrollView = styled.ScrollView`
-  margin-top: 20px;
-`;
+export const StyledScrollView = styled.ScrollView``;
 
 export const StyledHeaderButton = styled.TouchableOpacity`
   flex-direction: row;

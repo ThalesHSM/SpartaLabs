@@ -1,19 +1,19 @@
-import styled, { css } from "styled-components/native";
+import styled from "styled-components/native";
 import Colors from "@utils/colors";
 
 export const StyledScrollView = styled.ScrollView`
   flex: 1;
-  margin-top: 20px;
   margin-bottom: 20px;
   width: 100%;
   margin-right: 30px;
 `;
 
 export const StyledSearchBar = styled.View`
-  height: 120px;
+  height: 150px;
   padding: 10px;
-  padding-top: 20px;
+  padding-top: 50px;
   background-color: ${Colors.blue};
+  flex-direction: row;
 `;
 
 export const StyledmessageView = styled.View`
