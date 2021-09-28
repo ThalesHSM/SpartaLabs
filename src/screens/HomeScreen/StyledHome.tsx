@@ -1,28 +1,6 @@
 import styled, { css } from "styled-components/native";
 import Colors from "@utils/colors";
 
-import { AntDesign } from "@expo/vector-icons";
-
-interface IIcon {
-  colored: boolean;
-}
-
-export const HeartIcon = styled(AntDesign)<IIcon>`
-  padding-left: 10px;
-  padding-right: 10px;
-  padding-bottom: 10px;
-  padding-top: 10px;
-  ${(props) =>
-    props.colored === false
-      ? css`
-          color: ${Colors.black};
-        `
-      : props.colored === true &&
-        css`
-          color: ${Colors.red};
-        `}
-`;
-
 export const StyledScrollView = styled.ScrollView`
   flex: 1;
   margin-top: 20px;
@@ -32,9 +10,10 @@ export const StyledScrollView = styled.ScrollView`
 `;
 
 export const StyledSearchBar = styled.View`
-  height: 200px;
+  height: 120px;
   padding: 10px;
-  background-color: grey;
+  padding-top: 20px;
+  background-color: ${Colors.blue};
 `;
 
 export const StyledmessageView = styled.View`
@@ -43,7 +22,18 @@ export const StyledmessageView = styled.View`
   align-items: center;
 `;
 
-export const StyledmessageText = styled.Text`
-  font-weight: bold;
+export const StyledMessageText = styled.Text`
   font-size: 20px;
+  letter-spacing: 0.25px;
+  font-family: "Roboto_500Medium";
+`;
+
+export const StyledSecondMmessageText = styled.Text`
+  align-items: center;
+  padding-right: 5px;
+  padding-left: 5px;
+  font-size: 16px;
+  letter-spacing: 0.15px;
+  line-height: 24px;
+  font-family: "Roboto_400Regular";
 `;

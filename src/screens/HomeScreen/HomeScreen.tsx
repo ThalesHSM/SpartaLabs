@@ -12,6 +12,8 @@ import { StyledScrollView, StyledSearchBar } from "./StyledHome";
 import CityCard from "@src/components/CityCard";
 import { handleTempChange } from "@src/components/Temperature";
 
+import Colors from "@utils/colors";
+
 interface ICard {
   city: string;
   id: string | number[];
@@ -37,11 +39,14 @@ export default function HomeScreen() {
   }, []);
 
   async function handleCityInputValue(newCity: string) {
-    for (let i = 0; i < cityName.length; i++) {
-      if (newCity === cityName[i].city) {
-        return;
+    if (cityName && cityName.length) {
+      for (let i = 0; i < cityName.length; i++) {
+        if (newCity === cityName[i].city) {
+          return;
+        }
       }
     }
+
     const weather = await handleCityWeatherQuestion(newCity);
 
     if (weather === "No cities") {
@@ -50,8 +55,7 @@ export default function HomeScreen() {
       ]);
       return;
     }
-
-    if (isCelsius === true) {
+    if (cityName && cityName.length > 0 && isCelsius === true) {
       setCityName([
         ...cityName,
         {
@@ -67,7 +71,7 @@ export default function HomeScreen() {
       return;
     }
 
-    if (isCelsius === false) {
+    if (cityName && cityName.length > 0 && isCelsius === false) {
       setCityName([
         ...cityName,
         {
@@ -82,7 +86,38 @@ export default function HomeScreen() {
       ]);
       return;
     }
+
+    if (isCelsius === true) {
+      setCityName([
+        {
+          city: newCity,
+          id: uuid.v4(),
+          temp: Math.floor(weather.main.temp - 273),
+          minTemp: Math.floor(weather.main.temp_min - 273),
+          maxTemp: Math.floor(weather.main.temp_max - 273),
+          description: weather.weather[0].description,
+          saved: false,
+        },
+      ]);
+      return;
+    }
+
+    if (isCelsius === false) {
+      setCityName([
+        {
+          city: newCity,
+          id: uuid.v4(),
+          temp: Math.floor(((weather.main.temp - 273) * 9) / 5 + 32),
+          minTemp: Math.floor(((weather.main.temp_min - 273) * 9) / 5 + 32),
+          maxTemp: Math.floor(((weather.main.temp_max - 273) * 9) / 5 + 32),
+          description: weather.weather[0].description,
+          saved: false,
+        },
+      ]);
+      return;
+    }
   }
+
   function changeTemp() {
     setIsCelsius(!isCelsius);
 
@@ -97,7 +132,7 @@ export default function HomeScreen() {
             "locality",
             "administrative_area_level_3",
           ]}
-          placeholder="Search"
+          placeholder="Adicionar cidade"
           query={{
             key: "AIzaSyAcS7vJeEUD10lLbaq2O-1tIOXAu2n0M-w",
             language: "pt-br", // language of the results
@@ -107,18 +142,35 @@ export default function HomeScreen() {
             handleCityInputValue(data.structured_formatting.main_text)
           }
           onFail={(error) => console.error(error)}
+          textInputProps={{ placeholderTextColor: Colors.white }}
+          styles={{
+            textInput: {
+              backgroundColor: Colors.blue,
+              color: Colors.white,
+              fontSize: 20,
+              fontFamily: "Roboto_400Regular",
+            },
+            description: {
+              color: Colors.white,
+              fontSize: 20,
+              fontFamily: "Roboto_400Regular",
+            },
+            row: { backgroundColor: Colors.blue },
+            poweredContainer: { backgroundColor: Colors.blue },
+          }}
         />
       </StyledSearchBar>
-
-      <View style={{ alignItems: "flex-end", marginRight: 20 }}>
-        <TouchableOpacity onPress={changeTemp}>
-          {isCelsius === true ? (
-            <Text style={{ fontSize: 24 }}>°C</Text>
-          ) : (
-            <Text style={{ fontSize: 24 }}>°F</Text>
-          )}
-        </TouchableOpacity>
-      </View>
+      {cityName && cityName.length ? (
+        <View style={{ alignItems: "flex-end", marginRight: 20 }}>
+          <TouchableOpacity onPress={changeTemp}>
+            {isCelsius === true ? (
+              <Text style={{ fontSize: 24 }}>°C</Text>
+            ) : (
+              <Text style={{ fontSize: 24 }}>°F</Text>
+            )}
+          </TouchableOpacity>
+        </View>
+      ) : null}
 
       <CityCard setIsSaved={setIsSaved} cityName={cityName} />
     </StyledScrollView>

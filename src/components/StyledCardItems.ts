@@ -1,21 +1,14 @@
 import styled from "styled-components/native";
 import Colors from "@utils/colors";
 
-interface ICard {
-  children: any;
-}
-
-export const StyledCard = styled.View<ICard>`
-  flex: 1;
-  background-color: ${Colors.grey};
-  padding: 16px;
-`;
+import { AntDesign } from "@expo/vector-icons";
 
 export const StyledCardView = styled.View`
-  background-color: white;
-  margin-left: 15px;
-  width: 330px;
+  background-color: ${Colors.white};
+  width: 328px;
+  height: 130px;
   flex-direction: row;
+  align-self: center;
   margin-top: 10px;
   margin-bottom: 10px;
 `;
@@ -27,25 +20,30 @@ export const StyledTempView = styled.View`
 `;
 
 export const StyledFirstText = styled.Text`
-  font-weight: 600;
-  font-size: 25px;
-  margin-left: 5px;
-  margin-right: 5px;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin: 5px;
+  font-size: 24px;
   text-transform: capitalize;
+  font-family: "Roboto_400Regular";
 `;
 
 export const StyledSecondTextName = styled.Text`
-  font-size: 18px;
+  font-size: 14px;
+  line-height: 14px;
+  letter-spacing: 0.25px;
+  margin-left: 9px;
   margin-bottom: 10px;
-  margin-right: 10px;
-  margin-left: 10px;
+
+  font-family: "Roboto_400Regular";
 `;
 
 export const StyledDescription = styled.Text`
-  margin-left: 10px;
-  font-size: 16px;
+  margin-left: 9px;
+  margin-top: 16px;
+  font-size: 14px;
+  line-height: 20px;
+  letter-spacing: 0.25px;
+  color: ${Colors.orange};
+  font-family: "Roboto_400Regular";
 `;
 
 export const StyledTempAndHeartView = styled.View`
@@ -58,10 +56,20 @@ export const StyledTempAndHeartView = styled.View`
 export const StyledTempText = styled.Text`
   color: ${Colors.orange};
   font-size: 34px;
+  letter-spacing: 0.25px;
+  margin-right: 5px;
+  font-family: "Roboto_400Regular";
 `;
 
 export const StyledMinMaxTemp = styled.Text`
-  font-size: 20px;
-  margin-top: 10px;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.4px;
   margin-bottom: 10px;
+`;
+
+export const HeartIcon = styled(AntDesign)`
+  padding: 10px;
+
+  color: ${Colors.red};
 `;
