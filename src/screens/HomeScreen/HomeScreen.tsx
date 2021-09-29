@@ -52,7 +52,6 @@ export default function HomeScreen() {
   }, []);
 
   async function handleCityInputValue(newCity: string) {
-    setIsLoading(true);
     if (cityName && cityName.length) {
       for (let i = 0; i < cityName.length; i++) {
         if (newCity === cityName[i].city) {
@@ -60,6 +59,7 @@ export default function HomeScreen() {
         }
       }
     }
+    setIsLoading(true);
 
     const weather = await handleCityWeatherQuestion(newCity);
 
@@ -134,8 +134,13 @@ export default function HomeScreen() {
   }
 
   function clearTextInput() {
-    if (ref.current?.getAddressText()) {
+    if (
+      ref.current?.getAddressText() ||
+      ref.current?.isFocused() === false ||
+      (ref.current?.getAddressText() && ref.current?.isFocused())
+    ) {
       ref.current?.setAddressText("");
+      ref.current?.blur("");
       setIsclear(!isClear);
     }
   }
@@ -157,7 +162,7 @@ export default function HomeScreen() {
           placeholder="Cidades"
           query={{
             key: "AIzaSyAcS7vJeEUD10lLbaq2O-1tIOXAu2n0M-w",
-            language: "pt-br", // language of the results
+            language: "pt-br",
             components: "country:br",
           }}
           onPress={(data, details = null) =>
@@ -167,13 +172,10 @@ export default function HomeScreen() {
           textInputProps={{ placeholderTextColor: Colors.white }}
           styles={{
             textInput: {
-              backgroundColor: Colors.red,
+              backgroundColor: Colors.blue,
               color: Colors.white,
               fontSize: 20,
               fontFamily: "Roboto_400Regular",
-            },
-            textInputContainer: {
-              width: "100",
             },
 
             description: {
@@ -181,14 +183,14 @@ export default function HomeScreen() {
               fontSize: 20,
               fontFamily: "Roboto_400Regular",
             },
-            container: { height: 100 },
+            row: { backgroundColor: Colors.blue },
+            poweredContainer: { backgroundColor: Colors.blue },
           }}
         />
         <View
           style={{
             justifyContent: "flex-start",
             alignItems: "flex-end",
-            flex: 1,
           }}
         >
           {isClear ? (
@@ -241,7 +243,7 @@ export default function HomeScreen() {
         >
           <ActivityIndicator size="large" color="gray" />
         </View>
-      ) : cityName.length === 0 ? (
+      ) : cityName && cityName.length === 0 ? (
         <EmptyState />
       ) : (
         <FlatList
