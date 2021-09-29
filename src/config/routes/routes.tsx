@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ActivityIndicator, View, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 import { StatusBar } from "expo-status-bar";
 
@@ -14,8 +14,6 @@ import * as Font from "expo-font";
 
 import HomeScreen from "@src/screens/HomeScreen/HomeScreen";
 import DetailsScreen from "@src/screens/DetailsScreen/DetailsScreen";
-
-import Colors from "@src/utils/colors";
 
 const routes = createStackNavigator();
 
@@ -35,7 +33,6 @@ export default function Routes() {
   };
 
   if (IsReady === false) {
-    console.log(FontLoading);
     return (
       <AppLoading
         startAsync={FontLoading}

@@ -6,21 +6,18 @@ import { AntDesign } from "@expo/vector-icons";
 export const StyledCardView = styled.View`
   background-color: ${Colors.white};
   width: 328px;
-  height: 130px;
+  height: 150px;
   flex-direction: row;
   align-self: center;
   margin-top: 10px;
   margin-bottom: 10px;
-`;
-
-export const StyledTempView = styled.View`
-  margin-left: 10px;
-  align-items: center;
-  flex-direction: row;
+  border-width: 1px;
+  border-radius: 8px;
+  border-color: ${Colors.grey};
 `;
 
 export const StyledFirstText = styled.Text`
-  margin: 5px;
+  margin-top: 12px;
   font-size: 24px;
   text-transform: capitalize;
   font-family: "Roboto_400Regular";
@@ -29,16 +26,15 @@ export const StyledFirstText = styled.Text`
 export const StyledSecondTextName = styled.Text`
   font-size: 14px;
   line-height: 14px;
+  margin-left: 1px;
+  margin-top: 5px;
   letter-spacing: 0.25px;
-  margin-left: 9px;
-  margin-bottom: 10px;
 
   font-family: "Roboto_400Regular";
 `;
 
 export const StyledDescription = styled.Text`
-  margin-left: 9px;
-  margin-top: 16px;
+  margin-top: 25px;
   font-size: 14px;
   line-height: 20px;
   letter-spacing: 0.25px;
@@ -48,28 +44,33 @@ export const StyledDescription = styled.Text`
 
 export const StyledTempAndHeartView = styled.View`
   flex: 1;
-  margin-right: 20px;
+  margin-right: 15px;
   align-items: flex-end;
   justify-content: space-between;
 `;
 
 export const StyledTempText = styled.Text`
   color: ${Colors.orange};
-  font-size: 34px;
+  font-size: 36px;
   letter-spacing: 0.25px;
-  margin-right: 5px;
+  margin-top: 24px;
   font-family: "Roboto_400Regular";
+`;
+
+export const StyledTempView = styled.View`
+  align-items: flex-start;
+  flex-direction: column;
 `;
 
 export const StyledMinMaxTemp = styled.Text`
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.4px;
-  margin-bottom: 10px;
 `;
 
 export const HeartIcon = styled(AntDesign)`
   padding: 10px;
+  margin-bottom: 10px;
 
   color: ${Colors.red};
 `;

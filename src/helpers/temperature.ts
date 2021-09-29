@@ -5,6 +5,7 @@ export function handleTempChange(isCelsius: boolean, cityName: any) {
       cityName[i].maxTemp = Math.round((cityName[i].maxTemp * 9) / 5 + 32);
       cityName[i].minTemp = Math.round((cityName[i].minTemp * 9) / 5 + 32);
     }
+    return cityName;
   }
 
   if (cityName && cityName.length && isCelsius === false) {
@@ -13,5 +14,6 @@ export function handleTempChange(isCelsius: boolean, cityName: any) {
       cityName[i].maxTemp = Math.round(((cityName[i].maxTemp - 32) * 5) / 9);
       cityName[i].minTemp = Math.round(((cityName[i].minTemp - 32) * 5) / 9);
     }
+    return cityName;
   }
 }

@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
 import uuid from "react-native-uuid";
@@ -8,19 +14,18 @@ import { format, addDays, getDaysInMonth, addMonths } from "date-fns";
 import pt from "date-fns/locale/pt-BR";
 
 import { HandleCityWeekWeather } from "@config/api/api";
-import { handleTempChange } from "@src/components/Temperature";
+import { handleTempChange } from "../../helpers/temperature";
 
 import {
   StyledCityName,
   StyledHeaderButton,
   StyledHeaderText,
-  StyledScrollView,
 } from "./StyledDetails";
 
 import Colors from "@utils/colors";
 
 import { MaterialIcons } from "@expo/vector-icons";
-import CityCard from "@src/components/CityCard";
+import CityCard from "@src/components/CityCard/CityCard";
 
 interface ICard {
   city: string;
@@ -38,6 +43,7 @@ export default function DetailsScreen(route: any) {
 
   const [weekWeather, setWeekWeather] = useState<ICard[]>([]);
   const [isCelsius, setIsCelsius] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const { item } = route.route.params;
 
@@ -88,6 +94,8 @@ export default function DetailsScreen(route: any) {
   useEffect(() => {
     async function getWeather() {
       await getWeekWeather();
+
+      setIsLoading(false);
     }
 
     getWeather();
@@ -98,8 +106,9 @@ export default function DetailsScreen(route: any) {
 
     handleTempChange(isCelsius, weekWeather);
   }
+
   return (
-    <StyledScrollView>
+    <>
       <View
         style={{ backgroundColor: Colors.blue, padding: 10, paddingTop: 50 }}
       >
@@ -118,19 +127,28 @@ export default function DetailsScreen(route: any) {
         <StyledHeaderText>Previsão para os próximos dias</StyledHeaderText>
       </View>
 
-      {weekWeather && weekWeather.length ? (
+      {weekWeather && weekWeather.length > 0 ? (
         <View style={{ alignItems: "flex-end", marginRight: 20 }}>
           <TouchableOpacity onPress={changeTemp}>
-            {isCelsius === true ? (
-              <Text style={{ fontSize: 24 }}>°C</Text>
-            ) : (
-              <Text style={{ fontSize: 24 }}>°F</Text>
-            )}
+            <Text style={{ fontSize: 24 }}>{isCelsius ? "°C" : "°F"}</Text>
           </TouchableOpacity>
         </View>
       ) : null}
 
-      <CityCard cityName={weekWeather} />
-    </StyledScrollView>
+      {isLoading ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <ActivityIndicator size="large" color="gray" />
+        </View>
+      ) : (
+        <FlatList
+          data={weekWeather}
+          renderItem={({ item }) => {
+            return <CityCard item={item} />;
+          }}
+        />
+      )}
+    </>
   );
 }

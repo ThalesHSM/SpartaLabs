@@ -1,13 +1,6 @@
 import styled from "styled-components/native";
 import Colors from "@utils/colors";
 
-export const StyledScrollView = styled.ScrollView`
-  flex: 1;
-  margin-bottom: 20px;
-  width: 100%;
-  margin-right: 30px;
-`;
-
 export const StyledSearchBar = styled.View`
   height: 150px;
   padding: 10px;
