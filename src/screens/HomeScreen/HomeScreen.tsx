@@ -243,15 +243,15 @@ export default function HomeScreen() {
         >
           <ActivityIndicator size="large" color="gray" />
         </View>
-      ) : cityName && cityName.length === 0 ? (
-        <EmptyState />
-      ) : (
+      ) : cityName ? (
         <FlatList
           data={cityName}
           renderItem={({ item }) => {
             return <CityCard item={item} shouldShowSaveButton />;
           }}
         />
+      ) : (
+        <EmptyState />
       )}
     </>
   );
