@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { Text, View, TouchableOpacity, Alert } from "react-native";
+import React, { useEffect, useState, useRef } from "react";
+import {
+  Text,
+  View,
+  TouchableOpacity,
+  Alert,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import {
   handleCityWeatherQuestion,
@@ -7,14 +14,15 @@ import {
 } from "@config/api/api";
 import uuid from "react-native-uuid";
 
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
-import { StyledScrollView, StyledSearchBar } from "./StyledHome";
+import { StyledSearchBar } from "./StyledHome";
 
-import CityCard from "@src/components/CityCard";
-import { handleTempChange } from "@src/components/Temperature";
+import { handleTempChange } from "../../helpers/temperature";
 
 import Colors from "@utils/colors";
+import CityCard from "@src/components/CityCard/CityCard";
+import EmptyState from "@src/components/EmptyState";
 
 interface ICard {
   city: string;
@@ -28,8 +36,11 @@ interface ICard {
 
 export default function HomeScreen() {
   const [cityName, setCityName] = useState<ICard[]>([]);
-  const [isSaved, setIsSaved] = useState<boolean>(false);
   const [isCelsius, setIsCelsius] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isClear, setIsclear] = useState<boolean>(true);
+
+  const ref: any = useRef();
 
   useEffect(() => {
     async function handleStorageItems() {
@@ -41,6 +52,7 @@ export default function HomeScreen() {
   }, []);
 
   async function handleCityInputValue(newCity: string) {
+    setIsLoading(true);
     if (cityName && cityName.length) {
       for (let i = 0; i < cityName.length; i++) {
         if (newCity === cityName[i].city) {
@@ -51,14 +63,15 @@ export default function HomeScreen() {
 
     const weather = await handleCityWeatherQuestion(newCity);
 
+    setIsLoading(false);
+
     if (weather === "No cities") {
-      Alert.alert("Não encontramos essa cidade! ", "Procure outra!", [
+      return Alert.alert("Não encontramos essa cidade! ", "Procure outra!", [
         { text: "OK" },
       ]);
-      return;
     }
     if (cityName && cityName.length > 0 && isCelsius === true) {
-      setCityName([
+      return setCityName([
         ...cityName,
         {
           city: newCity,
@@ -70,11 +83,10 @@ export default function HomeScreen() {
           saved: false,
         },
       ]);
-      return;
     }
 
     if (cityName && cityName.length > 0 && isCelsius === false) {
-      setCityName([
+      return setCityName([
         ...cityName,
         {
           city: newCity,
@@ -86,11 +98,10 @@ export default function HomeScreen() {
           saved: false,
         },
       ]);
-      return;
     }
 
-    if (isCelsius === true) {
-      setCityName([
+    if (isCelsius) {
+      return setCityName([
         {
           city: newCity,
           id: uuid.v4(),
@@ -101,23 +112,19 @@ export default function HomeScreen() {
           saved: false,
         },
       ]);
-      return;
     }
 
-    if (isCelsius === false) {
-      setCityName([
-        {
-          city: newCity,
-          id: uuid.v4(),
-          temp: Math.floor(((weather.main.temp - 273) * 9) / 5 + 32),
-          minTemp: Math.floor(((weather.main.temp_min - 273) * 9) / 5 + 32),
-          maxTemp: Math.floor(((weather.main.temp_max - 273) * 9) / 5 + 32),
-          description: weather.weather[0].description,
-          saved: false,
-        },
-      ]);
-      return;
-    }
+    return setCityName([
+      {
+        city: newCity,
+        id: uuid.v4(),
+        temp: Math.floor(((weather.main.temp - 273) * 9) / 5 + 32),
+        minTemp: Math.floor(((weather.main.temp_min - 273) * 9) / 5 + 32),
+        maxTemp: Math.floor(((weather.main.temp_max - 273) * 9) / 5 + 32),
+        description: weather.weather[0].description,
+        saved: false,
+      },
+    ]);
   }
 
   function changeTemp() {
@@ -126,15 +133,28 @@ export default function HomeScreen() {
     handleTempChange(isCelsius, cityName);
   }
 
+  function clearTextInput() {
+    if (ref.current?.getAddressText()) {
+      ref.current?.setAddressText("");
+      setIsclear(!isClear);
+    }
+  }
+
+  function focusTextInput() {
+    ref.current?.focus();
+    setIsclear(!isClear);
+  }
+
   return (
-    <StyledScrollView keyboardShouldPersistTaps="always">
+    <>
       <StyledSearchBar>
         <GooglePlacesAutocomplete
+          ref={ref}
           filterReverseGeocodingByTypes={[
             "locality",
             "administrative_area_level_3",
           ]}
-          placeholder="Adicionar cidade"
+          placeholder="Cidades"
           query={{
             key: "AIzaSyAcS7vJeEUD10lLbaq2O-1tIOXAu2n0M-w",
             language: "pt-br", // language of the results
@@ -147,44 +167,90 @@ export default function HomeScreen() {
           textInputProps={{ placeholderTextColor: Colors.white }}
           styles={{
             textInput: {
-              backgroundColor: Colors.blue,
+              backgroundColor: Colors.red,
               color: Colors.white,
               fontSize: 20,
               fontFamily: "Roboto_400Regular",
             },
+            textInputContainer: {
+              width: "100",
+            },
+
             description: {
               color: Colors.white,
               fontSize: 20,
               fontFamily: "Roboto_400Regular",
             },
-            row: { backgroundColor: Colors.blue },
-            poweredContainer: { backgroundColor: Colors.blue },
+            container: { height: 100 },
           }}
         />
-        <AntDesign
-          name="search1"
-          size={25}
-          color={Colors.white}
+        <View
           style={{
-            paddingHorizontal: 10,
-            paddingVertical: 10,
-            marginTop: 3,
+            justifyContent: "flex-start",
+            alignItems: "flex-end",
+            flex: 1,
           }}
-        />
+        >
+          {isClear ? (
+            <TouchableOpacity onPress={focusTextInput}>
+              <AntDesign
+                name="search1"
+                size={25}
+                color={Colors.white}
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                }}
+              />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity onPress={clearTextInput}>
+              <MaterialIcons
+                name="clear"
+                size={25}
+                color={Colors.white}
+                style={{
+                  paddingHorizontal: 10,
+                  paddingVertical: 10,
+                }}
+              />
+            </TouchableOpacity>
+          )}
+        </View>
       </StyledSearchBar>
-      {cityName && cityName.length ? (
-        <View style={{ alignItems: "flex-end", marginRight: 20 }}>
+
+      {cityName && cityName.length > 0 ? (
+        <View
+          style={{
+            alignItems: "flex-end",
+            marginRight: 20,
+            marginVertical: 20,
+          }}
+        >
           <TouchableOpacity onPress={changeTemp}>
-            {isCelsius === true ? (
-              <Text style={{ fontSize: 24 }}>°C</Text>
-            ) : (
-              <Text style={{ fontSize: 24 }}>°F</Text>
-            )}
+            <Text style={{ fontSize: 24, fontFamily: "Roboto_400Regular" }}>
+              {isCelsius ? "°C" : "°F"}
+            </Text>
           </TouchableOpacity>
         </View>
       ) : null}
 
-      <CityCard setIsSaved={setIsSaved} cityName={cityName} />
-    </StyledScrollView>
+      {isLoading ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <ActivityIndicator size="large" color="gray" />
+        </View>
+      ) : cityName.length === 0 ? (
+        <EmptyState />
+      ) : (
+        <FlatList
+          data={cityName}
+          renderItem={({ item }) => {
+            return <CityCard item={item} shouldShowSaveButton />;
+          }}
+        />
+      )}
+    </>
   );
 }
